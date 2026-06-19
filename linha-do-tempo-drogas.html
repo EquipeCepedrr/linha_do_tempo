@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A História das Drogas no Brasil</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --ink: #1a1a2e;
+    --paper: #f5f0e8;
+    --accent: #c8381b;
+    --accent2: #2563a8;
+    --gold: #b8860b;
+    --muted: #6b6560;
+    --line: #d4c8b8;
+    --rr: #1d6b3c;
+    --rr-light: #e8f5ee;
+    --card-bg: #fffdf9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ---- HEADER ---- */
+  .hero {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 3.5rem 2rem 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg, transparent, transparent 80px,
+      rgba(255,255,255,.03) 80px, rgba(255,255,255,.03) 81px
+    );
+  }
+  .hero-eyebrow {
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: .9rem;
+    position: relative;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.6rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: .7rem;
+    position: relative;
+  }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero p {
+    font-size: clamp(.9rem, 2vw, 1.05rem);
+    color: rgba(245,240,232,.7);
+    max-width: 560px;
+    margin: 0 auto 1.6rem;
+    line-height: 1.65;
+    position: relative;
+  }
+  .hero-legend {
+    display: flex;
+    gap: 1.4rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: .78rem;
+    letter-spacing: .04em;
+    position: relative;
+  }
+  .hero-legend span {
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    color: rgba(245,240,232,.8);
+  }
+  .hero-legend .dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+  .dot-fed { background: var(--accent2); }
+  .dot-rr  { background: var(--rr); }
+  .dot-int { background: var(--accent); }
+
+  /* ---- FILTERS ---- */
+  .filters {
+    display: flex;
+    gap: .6rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 1.4rem 1rem .6rem;
+  }
+  .filter-btn {
+    padding: .42rem 1.1rem;
+    border-radius: 99px;
+    border: 1.5px solid var(--line);
+    background: var(--card-bg);
+    color: var(--muted);
+    font-size: .78rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .18s;
+    letter-spacing: .03em;
+  }
+  .filter-btn:hover { border-color: var(--ink); color: var(--ink); }
+  .filter-btn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .filter-btn.fed.active  { background: var(--accent2); border-color: var(--accent2); }
+  .filter-btn.rr.active   { background: var(--rr); border-color: var(--rr); }
+  .filter-btn.hist.active { background: var(--accent); border-color: var(--accent); }
+
+  /* ---- TIMELINE ---- */
+  .timeline-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.2rem 1rem 4rem;
+  }
+  .timeline { position: relative; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 68px; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--line);
+  }
+  @media (max-width: 540px) {
+    .timeline::before { left: 44px; }
+  }
+
+  /* ---- ITEM ---- */
+  .tl-item {
+    display: flex;
+    margin-bottom: .6rem;
+    position: relative;
+    transition: opacity .2s;
+  }
+  .tl-item.hidden { display: none; }
+
+  .tl-year {
+    width: 68px;
+    flex-shrink: 0;
+    text-align: right;
+    padding-right: 14px;
+    padding-top: 1.05rem;
+    font-family: 'Playfair Display', serif;
+    font-size: .88rem;
+    font-weight: 700;
+    color: var(--muted);
+    line-height: 1;
+    user-select: none;
+  }
+  @media (max-width: 540px) {
+    .tl-year { width: 44px; font-size: .72rem; padding-right: 9px; }
+  }
+
+  .tl-node {
+    flex-shrink: 0;
+    width: 14px;
+    margin-top: 1.12rem;
+  }
+  .tl-dot {
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    border: 2.5px solid var(--paper);
+    position: relative; z-index: 1;
+    cursor: pointer;
+    transition: transform .15s;
+  }
+  .tl-item:hover .tl-dot { transform: scale(1.25); }
+  .tl-dot.fed  { background: var(--accent2); box-shadow: 0 0 0 2px var(--accent2); }
+  .tl-dot.rr   { background: var(--rr);      box-shadow: 0 0 0 2px var(--rr); }
+  .tl-dot.hist { background: var(--accent);  box-shadow: 0 0 0 2px var(--accent); }
+
+  .tl-body {
+    flex: 1;
+    padding: .55rem .7rem .55rem .95rem;
+  }
+
+  /* ---- CARD ---- */
+  .tl-card {
+    background: var(--card-bg);
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow .18s;
+  }
+  .tl-card:hover { box-shadow: 0 4px 18px rgba(0,0,0,.08); }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: .8rem;
+    padding: .75rem 1rem .55rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .card-header-left { flex: 1; }
+
+  .card-tag {
+    display: inline-block;
+    font-size: .63rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: .15rem .55rem;
+    border-radius: 3px;
+    margin-bottom: .35rem;
+  }
+  .tag-fed  { background: #deeaf8; color: var(--accent2); }
+  .tag-rr   { background: var(--rr-light); color: var(--rr); }
+  .tag-hist { background: #fde8e4; color: var(--accent); }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(.92rem, 2.2vw, 1.08rem);
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+  .card-toggle {
+    font-size: 1rem;
+    color: var(--muted);
+    transition: transform .2s;
+    flex-shrink: 0;
+    margin-top: .25rem;
+  }
+  .tl-card.open .card-toggle { transform: rotate(180deg); }
+
+  .card-body {
+    display: none;
+    padding: 0 1rem 1rem;
+    border-top: 1px solid var(--line);
+  }
+  .tl-card.open .card-body { display: block; }
+
+  .card-body p {
+    font-size: .88rem;
+    line-height: 1.7;
+    color: #3d3830;
+    margin-top: .7rem;
+  }
+
+  .highlights {
+    margin-top: .9rem;
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+  }
+  .highlight-item {
+    display: flex;
+    gap: .5rem;
+    align-items: flex-start;
+    font-size: .82rem;
+    line-height: 1.5;
+    color: #3d3830;
+    background: #f5f0e8;
+    padding: .45rem .7rem;
+    border-radius: 5px;
+  }
+  .highlight-item::before {
+    content: '§';
+    font-weight: 700;
+    color: var(--gold);
+    flex-shrink: 0;
+    font-size: .85rem;
+  }
+
+  .lei-link {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    margin-top: 1rem;
+    font-size: .78rem;
+    font-weight: 600;
+    color: var(--accent2);
+    text-decoration: none;
+    letter-spacing: .03em;
+    border-bottom: 1px solid transparent;
+    transition: border-color .15s;
+  }
+  .lei-link:hover { border-color: var(--accent2); }
+  .lei-link svg { flex-shrink: 0; }
+
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    font-size: .76rem;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <p class="hero-eyebrow">Legislação Brasileira &amp; Roraimense</p>
+  <h1>A <em>História</em> das Drogas<br>em Forma de Lei</h1>
+  <p>Da Antiguidade ao Presente — uma linha do tempo interativa das principais legislações sobre substâncias psicoativas no Brasil e em Roraima.</p>
+  <div class="hero-legend">
+    <span><span class="dot dot-fed"></span>Federal</span>
+    <span><span class="dot dot-rr"></span>Roraima</span>
+    <span><span class="dot dot-int"></span>Histórico / Internacional</span>
+  </div>
+</header>
+
+<div class="filters">
+  <button class="filter-btn active" data-filter="all">Todas</button>
+  <button class="filter-btn fed"  data-filter="fed">Federal</button>
+  <button class="filter-btn rr"   data-filter="rr">Roraima</button>
+  <button class="filter-btn hist" data-filter="hist">Histórico</button>
+</div>
+
+<div class="timeline-wrap">
+<div class="timeline" id="timeline">
+
+<!-- 1603 -->
+<div class="tl-item" data-type="hist">
+  <div class="tl-year">1603</div>
+  <div class="tl-node"><div class="tl-dot hist"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-hist">Histórico / Portugal</span>
+          <p class="card-title">Ordenações Filipinas — Primeira regulamentação de substâncias</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>As Ordenações Filipinas, promulgadas durante o reinado de Filipe II de Portugal, representam a primeira expressão de regulamentação de substâncias no território que viria a ser o Brasil. O Livro V, Título LXXXIX, determinava que "ninguém tenha em sua casa rosalgar, não o venda nem outro material venenoso" — referindo-se ao <strong>arsênio</strong> e outros venenos, e também regulamentando o ópio (com exceção para boticários licenciados). Essa legislação organizou as atividades farmacêuticas e o controle de venenos, sem ainda falar em drogas psicoativas propriamente ditas.</p>
+        <a class="lei-link" href="https://www2.senado.leg.br/bdsf/item/id/242733" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Ordenações Filipinas — Senado Federal
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 1830 -->
+<div class="tl-item" data-type="hist">
+  <div class="tl-year">1830</div>
+  <div class="tl-node"><div class="tl-dot hist"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-hist">Histórico — Império</span>
+          <p class="card-title">Câmara do Rio de Janeiro proíbe o "pito de pango"</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>No contexto do Código Criminal do Império, a Câmara Municipal do Rio de Janeiro criou o primeiro ato legal proibindo a venda e o consumo do "pito de pango" — um dos nomes dados à planta <em>Cannabis</em> pelos escravos africanos, popularmente conhecida hoje como maconha. Era uma legislação de âmbito municipal, ainda sem abrangência nacional.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 1890 -->
+<div class="tl-item" data-type="fed">
+  <div class="tl-year">1890</div>
+  <div class="tl-node"><div class="tl-dot fed"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-fed">Federal</span>
+          <p class="card-title">Código Penal da República — comércio de substâncias venenosas</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>O Código Penal da República (art. 159) explicitamente proibiu o "comércio de substâncias venenosas", organizando o trabalho profissional dos boticários. Era punido com multa. Representou a primeira norma federal com caráter penal sobre substâncias.</p>
+        <a class="lei-link" href="https://www.planalto.gov.br/ccivil_03/decreto/1851-1899/D847.htm" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Decreto nº 847/1890 — Código Penal da República
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 1912 -->
+<div class="tl-item" data-type="hist">
+  <div class="tl-year">1912</div>
+  <div class="tl-node"><div class="tl-dot hist"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-hist">Internacional</span>
+          <p class="card-title">Conferência Internacional do Ópio — Período Sanitário</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>O Brasil foi signatário da Conferência Internacional do Ópio, que determinou uma série de alterações legislativas com ênfase higienista. Não havia criminalização do usuário, mas adotaram-se medidas invasivas e cogentes: obrigatoriedade de tratamento, internação compulsória e interdição de direitos. O foco era a saúde pública, não a punição penal.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 1940 -->
+<div class="tl-item" data-type="fed">
+  <div class="tl-year">1940</div>
+  <div class="tl-node"><div class="tl-dot fed"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-fed">Federal</span>
+          <p class="card-title">Código Penal — primeiras disposições sobre tráfico e posse ilícita</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>O Código Penal de 1940 reuniu em um único dispositivo legal as condutas relativas ao tráfico e à posse ilícita de substâncias psicoativas. Foi o primeiro instrumento federal organizado a tratar do tema como questão penal estruturada, marcando o início das preocupações oficiais na área.</p>
+        <a class="lei-link" href="https://www.planalto.gov.br/ccivil_03/decreto-lei/del2848compilado.htm" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Decreto-Lei nº 2.848/1940 — Código Penal
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 1976 -->
+<div class="tl-item" data-type="fed">
+  <div class="tl-year">1976</div>
+  <div class="tl-node"><div class="tl-dot fed"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-fed">Federal</span>
+          <p class="card-title">Lei 6.368/1976 — Lei de Entorpecentes</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>A Lei de Entorpecentes foi uma inovação histórica: pela primeira vez, a conduta do <strong>usuário</strong> foi disciplinada de forma distinta da do <strong>traficante</strong>. Permaneceu em vigor por 30 anos, até ser substituída pela Lei 11.343/2006.</p>
+        <a class="lei-link" href="https://www.planalto.gov.br/ccivil_03/leis/l6368.htm" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Lei nº 6.368/1976 — Planalto
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 1988 -->
+<div class="tl-item" data-type="fed">
+  <div class="tl-year">1988</div>
+  <div class="tl-node"><div class="tl-dot fed"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-fed">Federal</span>
+          <p class="card-title">Constituição Federal — Estado Democrático de Direito</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>A Constituição Federal de 1988 é o marco fundamental para toda a legislação subsequente. Em seu art. 5º, XLIII, classifica o tráfico ilícito de entorpecentes como crime inafiançável e insuscetível de graça ou anistia. Representa o nascimento do Estado Democrático de Direito e serve de base para todas as reformas institucionais na área de drogas.</p>
+        <a class="lei-link" href="https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Constituição Federal de 1988 — Planalto
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 1990 -->
+<div class="tl-item" data-type="fed">
+  <div class="tl-year">1990</div>
+  <div class="tl-node"><div class="tl-dot fed"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-fed">Federal</span>
+          <p class="card-title">Lei 8.072/1990 — Crimes Hediondos: tráfico equiparado</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>A Lei dos Crimes Hediondos aumentou as penas e restringiu os benefícios processuais para crimes de extrema gravidade. O tráfico ilícito de entorpecentes foi equiparado a crime hediondo — inafiançável e insuscetível de graça ou anistia — em conformidade com o art. 5º, XLIII da Constituição Federal.</p>
+        <div class="highlights">
+          <div class="highlight-item">Tráfico de drogas equiparado a crime hediondo, com regime inicial fechado e progressão de regime mais restrita.</div>
+          <div class="highlight-item">Vedação de anistia, graça e indulto para crimes hediondos e equiparados.</div>
+        </div>
+        <a class="lei-link" href="https://www.planalto.gov.br/ccivil_03/leis/l8072.htm" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Lei nº 8.072/1990 — Planalto
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 1995 -->
+<div class="tl-item" data-type="fed">
+  <div class="tl-year">1995</div>
+  <div class="tl-node"><div class="tl-dot fed"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-fed">Federal</span>
+          <p class="card-title">Lei 9.034/1995 — Organizações Criminosas</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>Dispõe sobre a utilização de meios operacionais para a prevenção e repressão de ações praticadas por organizações criminosas. Define e regula meios de prova e procedimentos investigatórios especiais, como a ação controlada e o acesso a dados fiscais e bancários. Foi revogada pela Lei nº 12.850/2013, que modernizou o combate ao crime organizado.</p>
+        <div class="highlights">
+          <div class="highlight-item">Permitiu ação controlada, infiltração policial e acesso a dados sigilosos em investigações de crime organizado.</div>
+          <div class="highlight-item">Marco inicial do enfrentamento estruturado ao crime organizado no Brasil.</div>
+        </div>
+        <a class="lei-link" href="https://www.planalto.gov.br/ccivil_03/LEIS/L9034.htm" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Lei nº 9.034/1995 — Planalto
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2001 -->
+<div class="tl-item" data-type="fed">
+  <div class="tl-year">2001</div>
+  <div class="tl-node"><div class="tl-dot fed"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-fed">Federal</span>
+          <p class="card-title">Lei 10.216/2001 — Reforma Psiquiátrica</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>A Lei da Reforma Psiquiátrica organizou as normas sobre os direitos das pessoas com transtorno mental e regulou os tipos de internações. Surgiu em resposta às críticas aos hospitais psiquiátricos que internavam usuários de substâncias sem diagnóstico específico, produzindo tratamentos generalistas. Aponta para a transição do modelo manicomial para o atendimento em rede comunitária.</p>
+        <div class="highlights">
+          <div class="highlight-item">Garante direitos fundamentais às pessoas com transtorno mental, incluindo usuários e dependentes de substâncias.</div>
+          <div class="highlight-item">Regulamenta internação voluntária, involuntária e compulsória.</div>
+          <div class="highlight-item">Orienta a substituição do modelo manicomial pelo atendimento em rede aberta e comunitária.</div>
+        </div>
+        <a class="lei-link" href="https://www.planalto.gov.br/ccivil_03/leis/leis_2001/l10216.htm" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Lei nº 10.216/2001 — Planalto
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2004 RR -->
+<div class="tl-item" data-type="rr">
+  <div class="tl-year">2004</div>
+  <div class="tl-node"><div class="tl-dot rr"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-rr">Roraima</span>
+          <p class="card-title">Lei Ordinária nº 424/2004 — Comitê Antidrogas nas escolas</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>Instituiu a criação de Comitês Antidrogas em todas as unidades de ensino médio e fundamental do Estado de Roraima, com foco na realização de atividades educativas de prevenção ao uso de álcool, fumo e outras drogas.</p>
+        <a class="lei-link" href="https://sapl.al.rr.leg.br/norma/pesquisar?tipo_norma=&numero=424&ano=2004&search=pesquisar" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Buscar na ALE-RR — Lei nº 424/2004
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2005 RR -->
+<div class="tl-item" data-type="rr">
+  <div class="tl-year">2005</div>
+  <div class="tl-node"><div class="tl-dot rr"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-rr">Roraima</span>
+          <p class="card-title">Lei nº 493/2005 — Dia Estadual do PROERD</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>Instituiu o "Dia Estadual do PROERD – Programa Educacional de Resistência às Drogas e à Violência" em 26 de março. O programa, desenvolvido em parceria com a Polícia Militar, alerta crianças e adolescentes sobre os perigos das drogas e desenvolve a autonomia para recusá-las. Em 26 anos de atuação, formou mais de 110 mil alunos em Roraima.</p>
+        <a class="lei-link" href="https://sapl.al.rr.leg.br/norma/pesquisar?tipo_norma=&numero=493&ano=2005&search=pesquisar" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Buscar na ALE-RR — Lei nº 493/2005
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2006 SISNAD -->
+<div class="tl-item" data-type="fed">
+  <div class="tl-year">2006</div>
+  <div class="tl-node"><div class="tl-dot fed"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-fed">Federal</span>
+          <p class="card-title">Lei 11.343/2006 — SISNAD (Lei de Drogas vigente)</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>Institui o Sistema Nacional de Políticas Públicas sobre Drogas (SISNAD), em vigor até hoje. É um marco por consolidar a distinção entre usuário e traficante em âmbito nacional, reafirmar os direitos humanos dos dependentes e estruturar uma política de saúde pública integrada com respeito à autonomia individual.</p>
+        <div class="highlights">
+          <div class="highlight-item">Usuário de drogas não é preso, mas responde por medidas educativas (Art. 28).</div>
+          <div class="highlight-item">Usuários e dependentes têm direito a tratamento gratuito no SUS e a plano individual de atendimento (Arts. 22, 23-A e 23-B).</div>
+          <div class="highlight-item">Plantio, cultivo e produção de drogas são proibidos, com exceções restritas (Art. 2º).</div>
+        </div>
+        <a class="lei-link" href="https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2006/lei/l11343.htm" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Lei nº 11.343/2006 — Planalto
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2007 RR -->
+<div class="tl-item" data-type="rr">
+  <div class="tl-year">2007</div>
+  <div class="tl-node"><div class="tl-dot rr"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-rr">Roraima</span>
+          <p class="card-title">Lei Ordinária nº 595/2007 — Prevenção em órgãos públicos</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>Tornou obrigatória a afixação de materiais informativos sobre os malefícios do fumo, bebidas alcoólicas e drogas em órgãos públicos e instituições de ensino do estado, ampliando o alcance das políticas estaduais de prevenção.</p>
+        <a class="lei-link" href="https://sapl.al.rr.leg.br/norma/pesquisar?tipo_norma=&numero=595&ano=2007&search=pesquisar" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Buscar na ALE-RR — Lei nº 595/2007
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2009 RR -->
+<div class="tl-item" data-type="rr">
+  <div class="tl-year">2009</div>
+  <div class="tl-node"><div class="tl-dot rr"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-rr">Roraima</span>
+          <p class="card-title">Lei nº 733/2009 — Lei Antifumo de Roraima</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>Proíbe o fumo em espaços coletivos fechados — públicos ou privados — em todo o estado de Roraima, organizando e formalizando as restrições ao tabagismo em ambientes compartilhados.</p>
+        <a class="lei-link" href="https://sapl.al.rr.leg.br/norma/pesquisar?tipo_norma=&numero=733&ano=2009&search=pesquisar" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Buscar na ALE-RR — Lei nº 733/2009
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2011 RAPS -->
+<div class="tl-item" data-type="fed">
+  <div class="tl-year">2011</div>
+  <div class="tl-node"><div class="tl-dot fed"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-fed">Federal</span>
+          <p class="card-title">Portaria nº 3.088/2011 — Rede de Atenção Psicossocial (RAPS)</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>Instituiu a Rede de Atenção Psicossocial (RAPS) no âmbito do SUS, integrando serviços para pessoas com sofrimento mental e necessidades decorrentes do uso de drogas. A RAPS é uma alternativa ao modelo manicomial: o atendimento é aberto, e o sujeito pode buscar ajuda e sair a qualquer momento. Seu princípio é o trabalho conjunto entre estado, família e indivíduo.</p>
+        <a class="lei-link" href="https://bvsms.saude.gov.br/bvs/saudelegis/gm/2011/prt3088_23_12_2011_rep.html" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Portaria nº 3.088/2011 — BVS / Ministério da Saúde
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2015 RR -->
+<div class="tl-item" data-type="rr">
+  <div class="tl-year">2015</div>
+  <div class="tl-node"><div class="tl-dot rr"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-rr">Roraima</span>
+          <p class="card-title">Lei Ordinária nº 996/2015 — Semana de Combate ao Alcoolismo</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>Institui a Semana Estadual de Combate e Prevenção ao Alcoolismo, realizada anualmente do 1º ao 7º dia de setembro. A data incentiva a realização de palestras, seminários e atividades de grupos de apoio como Alcoólicos Anônimos.</p>
+        <a class="lei-link" href="https://sapl.al.rr.leg.br/norma/pesquisar?tipo_norma=&numero=996&ano=2015&search=pesquisar" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Buscar na ALE-RR — Lei nº 996/2015
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2018 RR -->
+<div class="tl-item" data-type="rr">
+  <div class="tl-year">2018</div>
+  <div class="tl-node"><div class="tl-dot rr"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-rr">Roraima</span>
+          <p class="card-title">Lei nº 1.258/2018 — Semana Estadual de Combate ao Uso de Drogas</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>Cria a Semana Estadual de Combate ao Uso de Drogas, com foco especial no alerta sobre o avanço das substâncias ilícitas sintéticas no estado.</p>
+        <a class="lei-link" href="https://sapl.al.rr.leg.br/norma/pesquisar?tipo_norma=&numero=1258&ano=2018&search=pesquisar" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Buscar na ALE-RR — Lei nº 1.258/2018
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2019 Federal -->
+<div class="tl-item" data-type="fed">
+  <div class="tl-year">2019</div>
+  <div class="tl-node"><div class="tl-dot fed"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-fed">Federal</span>
+          <p class="card-title">Lei 13.840/2019 — Internação involuntária no SISNAD</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>Sancionada em 5 de junho de 2019, altera a Lei 11.343/2006 para permitir a internação involuntária de pessoas com diagnóstico de Transtorno por Uso de Substâncias, mediante pedido de familiar, responsável legal ou servidor público de saúde/assistência social, com avaliação médica obrigatória e prazo máximo de 90 dias. Denotou um caráter mais interventivo na política de drogas.</p>
+        <div class="highlights">
+          <div class="highlight-item">Internação involuntária depende de avaliação e autorização médica, com prazo máximo de 90 dias.</div>
+          <div class="highlight-item">Inclui as comunidades terapêuticas acolhedoras no SISNAD.</div>
+        </div>
+        <a class="lei-link" href="https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2019/lei/l13840.htm" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Lei nº 13.840/2019 — Planalto
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2019 RR FESP -->
+<div class="tl-item" data-type="rr">
+  <div class="tl-year">2019</div>
+  <div class="tl-node"><div class="tl-dot rr"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-rr">Roraima</span>
+          <p class="card-title">Lei nº 1.355/2019 — Fundo Estadual de Segurança Pública (FESP/RR)</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>Institui o Fundo Estadual de Segurança Pública do Estado de Roraima (FESP/RR), para financiar e apoiar atividades e programas de modernização dos órgãos de segurança. Especifica as entidades públicas gestoras e a responsabilidade institucional da Secretaria de Estado de Segurança Pública (SESP).</p>
+        <a class="lei-link" href="https://sapl.al.rr.leg.br/norma/pesquisar?tipo_norma=&numero=1355&ano=2019&search=pesquisar" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Buscar na ALE-RR — Lei nº 1.355/2019
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2020 RR -->
+<div class="tl-item" data-type="rr">
+  <div class="tl-year">2020</div>
+  <div class="tl-node"><div class="tl-dot rr"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-rr">Roraima</span>
+          <p class="card-title">Lei Ordinária nº 1.382/2020 — Mensagens educativas em shows e eventos</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>Torna obrigatória a veiculação de mensagens educativas sobre o uso indevido de álcool e outras drogas em shows, eventos culturais e esportivos voltados ao público infantojuvenil, bem como nos respectivos ingressos.</p>
+        <a class="lei-link" href="https://sapl.al.rr.leg.br/norma/pesquisar?tipo_norma=&numero=1382&ano=2020&search=pesquisar" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Buscar na ALE-RR — Lei nº 1.382/2020
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2022 RR Política -->
+<div class="tl-item" data-type="rr">
+  <div class="tl-year">2022</div>
+  <div class="tl-node"><div class="tl-dot rr"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-rr">Roraima</span>
+          <p class="card-title">Lei nº 1.697/2022 — Política Estadual sobre Drogas de Roraima</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>Uma das principais legislações sobre o tema em Roraima, institui a Política Estadual sobre Drogas em consonância com a legislação federal. Conceitua "droga", "usuário" e "projeto terapêutico singular" e institui as bases legais para o Fundo Estadual Antidrogas (FUNEAD), financiando políticas de prevenção, tratamento e repressão.</p>
+        <div class="highlights">
+          <div class="highlight-item">Define conceitualmente droga, usuário e projeto terapêutico singular no âmbito estadual.</div>
+          <div class="highlight-item">Cria o FUNEAD para financiar políticas públicas de combate às drogas.</div>
+          <div class="highlight-item">Estrutura ações de prevenção, tratamento, reabilitação e reinserção social.</div>
+        </div>
+        <a class="lei-link" href="https://diarios.al.rr.leg.br/wp-content/uploads/2022/07/DIARIO-ALE-RR-ED.-3725-01.07.2022.pdf" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Lei nº 1.697/2022 — Diário ALE-RR (PDF)
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2022 RR CEPED -->
+<div class="tl-item" data-type="rr">
+  <div class="tl-year">2022</div>
+  <div class="tl-node"><div class="tl-dot rr"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-rr">Roraima</span>
+          <p class="card-title">Decreto nº 33.653-E/2022 — CEPED</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>Institui a Coordenação Estadual da Política de Enfrentamento às Drogas de Roraima (CEPED), com objetivo de acompanhar o cumprimento do SISNAD, fortalecer ações municipais, garantir direitos sociais de pessoas com uso/abuso de substâncias e desenvolver atividades de prevenção e reinserção social.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2024 STF -->
+<div class="tl-item" data-type="fed">
+  <div class="tl-year">2024</div>
+  <div class="tl-node"><div class="tl-dot fed"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-fed">Federal / STF</span>
+          <p class="card-title">STF — Decisão sobre usuário e traficante de Cannabis</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>O Supremo Tribunal Federal discutiu mudanças no conceito de usuário e traficante especificamente para substâncias da planta Cannabis, em linha com os debates internacionais sobre uso medicinal. A decisão acompanha o crescente reconhecimento do canabidiol (CBD) e do THC para fins terapêuticos em epilepsias refratárias, dor crônica, esclerose múltipla e náuseas por quimioterapia.</p>
+        <div class="highlights">
+          <div class="highlight-item">Uso medicinal de Cannabis é realizado sob prescrição e acompanhamento médico — não se confunde com uso recreativo.</div>
+          <div class="highlight-item">Estudos em andamento avaliam eficácia no tratamento de depressão, ansiedade, TEA e esquizofrenia.</div>
+        </div>
+        <a class="lei-link" href="https://portal.stf.jus.br/processos/detalhe.asp?incidente=2691249" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          RE 635.659 — Portal do STF
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2024 RR Marcha -->
+<div class="tl-item" data-type="rr">
+  <div class="tl-year">2024</div>
+  <div class="tl-node"><div class="tl-dot rr"></div></div>
+  <div class="tl-body">
+    <div class="tl-card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <div class="card-header-left">
+          <span class="card-tag tag-rr">Roraima</span>
+          <p class="card-title">Lei nº 2.010/2024 — Dia Estadual da Marcha da Família Contra as Drogas</p>
+        </div>
+        <span class="card-toggle">▾</span>
+      </div>
+      <div class="card-body">
+        <p>Institui o Dia Estadual da Marcha da Família Contra as Drogas, coincidindo com o Dia Nacional de Combate às Drogas e ao Alcoolismo (20 de fevereiro), incluindo a data no Calendário Oficial de Eventos do Estado. A organização fica a cargo de entidades não governamentais, igrejas, iniciativa privada e entidades comunitárias.</p>
+        <a class="lei-link" href="https://al.rr.leg.br/rr-cidadao/leis-estaduais/" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Leis Estaduais — ALE-RR
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /timeline -->
+</div><!-- /timeline-wrap -->
+
+<footer>
+  Linha do tempo das legislações sobre drogas no Brasil e em Roraima. Leis federais vinculadas ao portal oficial do Planalto. Leis estaduais vinculadas à Assembleia Legislativa de Roraima (ALE-RR) e ao SAPL.
+</footer>
+
+<script>
+  function toggleCard(headerEl) {
+    const card = headerEl.closest('.tl-card');
+    card.classList.toggle('open');
+  }
+
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('.tl-item').forEach(item => {
+        if (filter === 'all' || item.dataset.type === filter) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>
